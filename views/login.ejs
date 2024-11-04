@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - File Uploader</title>
+  </head>
+  <body>
+    <main>
+      <header>Login</header>
+      <form action="/login" method="POST">
+        <div>
+          <label for="username">Username:</label>
+          <input
+            type="text"
+            name="username"
+            id="username"
+            required
+            autocomplete="off"
+            autofocus
+          />
+        </div>
+        <div>
+          <label for="password">Password:</label>
+          <input type="password" name="password" id="password" required />
+        </div>
+        <button type="submit">Login</button>
+      </form>
+      <p>Don't have an account? <a href="/register">Register here</a></p>
+    </main>
+  </body>
+</html>
