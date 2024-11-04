@@ -12,3 +12,31 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id       Int      @id @default(autoincrement())
+  username String   @db.VarChar(255)
+  password String   @db.VarChar(255)
+  folders  Folder[] @relation("CreatedFolders")
+}
+
+model Folder {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(255)
+  children  Folder[] @relation("ParentFolder")
+  parent    Folder?  @relation("ParentFolder", fields: [parent_id], references: [id])
+  parent_id Int?
+  user      User     @relation("CreatedFolders", fields: [user_id], references: [id])
+  user_id   Int
+  files     File[]
+}
+
+model File {
+  id          Int    @id @default(autoincrement())
+  name        String @db.VarChar(255)
+  size        String @db.VarChar(255) // ???
+  upload_time String @db.VarChar(255) // ???
+  url         String @db.VarChar(255)
+  folder      Folder @relation(fields: [folder_id], references: [id])
+  folder_id   Int
+}
