@@ -9,6 +9,7 @@
     <main>
       <header>Register</header>
       <form action="/register" method="POST">
+        <%- include("partials/errors", { errors: locals.errors }) %>
         <div>
           <label for="username">Username:</label>
           <input
