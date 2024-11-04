@@ -5,6 +5,7 @@ const session = require("express-session");
 const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
 const { PrismaClient } = require("@prisma/client");
 const CustomError = require("./utils/CustomError");
+const indexRouter = require("./routes/indexRouter");
 
 const app = express();
 
@@ -35,9 +36,7 @@ app.use(
   }),
 );
 
-app.get("/", () => {
-  throw new Error("Internal server error working!");
-});
+app.use("/", indexRouter);
 
 // If no routers matched the route then it is a Not Found
 app.use((req, res, next) => {
