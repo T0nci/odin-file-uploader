@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const db = require("../prisma/queries");
 const bcrypt = require("bcryptjs");
+const passport = require("passport");
 
 const validateRegister = () => [
   body("username")
@@ -64,8 +65,14 @@ const loginGet = (req, res) => {
   res.render("login");
 };
 
+const loginPost = passport.authenticate("local", {
+  successRedirect: "/folder/root",
+  failureRedirect: "/login",
+});
+
 module.exports = {
   registerGet,
   registerPost,
   loginGet,
+  loginPost,
 };
