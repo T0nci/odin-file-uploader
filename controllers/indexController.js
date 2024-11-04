@@ -40,7 +40,9 @@ const validateRegister = () => [
 ];
 
 const registerGet = (req, res) => {
-  res.render("register");
+  if (req.isAuthenticated()) return res.redirect("/folder/root");
+
+  return res.render("register");
 };
 
 const registerPost = [
@@ -56,13 +58,15 @@ const registerPost = [
 
       await db.createUser(req.body.username, hashedPassword);
 
-      res.redirect("/login");
+      return res.redirect("/login");
     });
   }),
 ];
 
 const loginGet = (req, res) => {
-  res.render("login");
+  if (req.isAuthenticated()) return res.redirect("/folder/root");
+
+  return res.render("login");
 };
 
 const loginPost = passport.authenticate("local", {
@@ -70,9 +74,17 @@ const loginPost = passport.authenticate("local", {
   failureRedirect: "/login",
 });
 
+const isAuth = (req, res, next) => {
+  if (!req.isAuthenticated()) return res.redirect("/login");
+
+  // If user is authenticated we call next to access other routes, otherwise we redirect to login
+  next();
+};
+
 module.exports = {
   registerGet,
   registerPost,
   loginGet,
   loginPost,
+  isAuth,
 };
