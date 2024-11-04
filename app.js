@@ -49,7 +49,7 @@ app.use((req, res, next) => {
 });
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
-  console.error(err);
+  if (err.statusCode !== 404) console.error(err);
 
   if (!err.statusCode) {
     err.statusCode = 500;
