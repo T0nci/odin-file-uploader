@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
-const db = require("../prisma/queries");
+const prisma = require("../prisma/client");
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
 
@@ -14,7 +14,11 @@ const validateRegister = () => [
       "Username must only contain letters of the alphabet, numbers, '.' and/or '_'.",
     )
     .custom(async (username) => {
-      const result = await db.getUserByUsername(username);
+      const result = await prisma.user.findUnique({
+        where: {
+          username: username,
+        },
+      });
 
       if (result) throw false;
     })
@@ -56,7 +60,12 @@ const registerPost = [
     bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
       if (err) throw err;
 
-      await db.createUser(req.body.username, hashedPassword);
+      await prisma.user.create({
+        data: {
+          username: req.body.username,
+          password: hashedPassword,
+        },
+      });
 
       return res.redirect("/login");
     });
