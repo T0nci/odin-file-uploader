@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= folder.name %> - File Uploader</title>
+  </head>
+  <body>
+    <%- include("partials/navbar", { links: links }) %>
+    <main>
+      <div>
+        <header>Folder: <%= folder.name %></header>
+        <form action="/file/create/<%= folder.id %>" method="POST">
+          <input type="file" name="file" required>
+          <button type="submit">Upload</button>
+        </form>
+        <form action="/folder/create/<%= folder.id %>">
+          <input type="text" name="folder" required autocomplete="off">
+          <button type="submit">Create Folder</button>
+        </form>
+      </div>
+      <ul>
+        <% items.forEach((item) => { %>
+          <% if (item.url) { %>
+            <li>File: <%= item.name %></li>
+          <% } else { %>
+            <li>Folder: <%= item.name %></li>
+          <% } %>
+        <% }) %>
+      </ul>
+    </main>
+  </body>
+</html>
