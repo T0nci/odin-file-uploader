@@ -39,11 +39,11 @@ model Folder {
 }
 
 model File {
-  id          Int    @id @default(autoincrement())
-  name        String @db.VarChar(255)
-  size        String @db.VarChar(255) // ???
-  upload_time String @db.VarChar(255) // ???
-  url         String @db.VarChar(255)
-  folder      Folder @relation(fields: [folder_id], references: [id])
-  folder_id   Int
+  id          Int     @id @default(autoincrement())
+  name        String  @db.VarChar(255)
+  size        String  @db.VarChar(255) // ???
+  upload_time String  @db.VarChar(255) // ???
+  url         String  @db.VarChar(255)
+  folder      Folder? @relation(fields: [folder_id], references: [id])
+  folder_id   Int?
 }
