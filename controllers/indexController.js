@@ -64,6 +64,12 @@ const registerPost = [
         data: {
           username: req.body.username,
           password: hashedPassword,
+          folders: {
+            create: {
+              name: "root",
+              parent_id: null,
+            },
+          },
         },
       });
 
