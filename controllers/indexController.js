@@ -96,10 +96,19 @@ const isAuth = (req, res, next) => {
   next();
 };
 
+const logout = asyncHandler((req, res) => {
+  req.logout((err) => {
+    if (err) throw err;
+
+    res.redirect("/login");
+  });
+});
+
 module.exports = {
   registerGet,
   registerPost,
   loginGet,
   loginPost,
   isAuth,
+  logout,
 };

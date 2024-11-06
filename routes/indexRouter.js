@@ -8,5 +8,6 @@ indexRouter.post("/register", indexController.registerPost);
 indexRouter.get("/login", indexController.loginGet);
 indexRouter.post("/login", indexController.loginPost);
 indexRouter.use(indexController.isAuth);
+indexRouter.get("/logout", indexController.logout);
 
 module.exports = indexRouter;
