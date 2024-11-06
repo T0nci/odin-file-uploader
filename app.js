@@ -7,6 +7,7 @@ const prisma = require("./prisma/client");
 const passport = require("passport");
 const CustomError = require("./utils/CustomError");
 const indexRouter = require("./routes/indexRouter");
+const folderRouter = require("./routes/folderRouter");
 
 const app = express();
 
@@ -42,6 +43,7 @@ require("./utils/passport-setup");
 app.use(passport.session());
 
 app.use("/", indexRouter);
+app.use("/folder", folderRouter);
 
 // If no routers matched the route then it is a Not Found
 app.use((req, res, next) => {
