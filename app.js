@@ -6,6 +6,7 @@ const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
 const prisma = require("./prisma/client");
 const passport = require("passport");
 const CustomError = require("./utils/CustomError");
+const links = require("./utils/links");
 const indexRouter = require("./routes/indexRouter");
 const folderRouter = require("./routes/folderRouter");
 
@@ -58,7 +59,7 @@ app.use((err, req, res, next) => {
     err.message = "Internal Server Error";
   }
 
-  res.status(err.statusCode).render("error", { error: err });
+  res.status(err.statusCode).render("error", { error: err, links });
 });
 
 const PORT = process.env.PORT || 3000;

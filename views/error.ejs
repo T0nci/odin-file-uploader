@@ -6,6 +6,7 @@
     <title>Error - File Uploader</title>
   </head>
   <body>
+    <%- include("partials/navbar", { links: links }) %>
     <p><%= `${error.statusCode}: ${error.message}` %></p>
   </body>
 </html>
