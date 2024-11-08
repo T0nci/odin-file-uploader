@@ -14,17 +14,24 @@
           <input type="file" name="file" required>
           <button type="submit">Upload</button>
         </form>
-        <form action="/folder/create/<%= folder.id %>">
+        <form action="/folder/create/<%= folder.id %>" method="POST">
           <input type="text" name="folder" required autocomplete="off">
           <button type="submit">Create Folder</button>
         </form>
       </div>
       <ul>
+        <% if (folder.parent_id) { %>
+          <li>
+            <a href="/folder/<%= folder.parent_id %>">../</a>
+          </li>
+        <% } %>
         <% items.forEach((item) => { %>
           <% if (item.url) { %>
-            <li>File: <%= item.name %></li>
+            <li><%= item.name %></li>
           <% } else { %>
-            <li>Folder: <%= item.name %></li>
+            <li>
+              <a href="/folder/<%= item.id %>"><%= item.name %>/</a>
+            </li>
           <% } %>
         <% }) %>
       </ul>

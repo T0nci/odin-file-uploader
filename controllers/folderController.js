@@ -5,21 +5,27 @@ const links = require("../utils/links");
 const CustomError = require("../utils/CustomError");
 
 const validateFolderId = () =>
-  param("folderId")
-    .custom((folderId) => {
-      return folderId === "root" || /^[0-9]+$/.test(folderId);
-    })
-    .custom(async (folderId, { req }) => {
-      if (folderId !== "root") {
-        const folder = await prisma.folder.findUnique({
-          where: {
-            id: Number(folderId),
-          },
-        });
-
-        if (!folder || folder.user_id !== req.user.id) throw false;
-      }
+  param("folderId").custom(async (folderId, { req }) => {
+    const folder = await prisma.folder.findUnique({
+      where: {
+        id: Number(folderId),
+      },
     });
+
+    if (!folder || folder.user_id !== req.user.id) throw false;
+  });
+
+const rootGet = asyncHandler(async (req, res) => {
+  const rootFolder = await prisma.folder.findFirst({
+    where: {
+      name: "root",
+      parent_id: null,
+      user_id: req.user.id,
+    },
+  });
+
+  res.redirect(`/folder/${rootFolder.id}`);
+});
 
 const folderGet = [
   validateFolderId(),
@@ -67,5 +73,6 @@ const folderGet = [
 ];
 
 module.exports = {
+  rootGet,
   folderGet,
 };
