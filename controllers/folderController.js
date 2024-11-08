@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const prisma = require("../prisma/client");
-const { validationResult, param } = require("express-validator");
+const { validationResult, param, body } = require("express-validator");
 const links = require("../utils/links");
 const CustomError = require("../utils/CustomError");
 
@@ -14,6 +14,12 @@ const validateFolderId = () =>
 
     if (!folder || folder.user_id !== req.user.id) throw false;
   });
+
+const validateFolderName = () =>
+  body("folder")
+    .trim()
+    .isLength({ min: 1, max: 200 })
+    .withMessage("Folder name must be between 1 and 200 characters.");
 
 const rootGet = asyncHandler(async (req, res) => {
   const rootFolder = await prisma.folder.findFirst({
@@ -72,7 +78,35 @@ const folderGet = [
   }),
 ];
 
+const folderPost = [
+  validateFolderId(),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw new CustomError(404, "Folder Not Found.");
+
+    next();
+  },
+  validateFolderName(),
+  asyncHandler(async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw new CustomError(400, errors.array()[0].msg);
+
+    const folderId = Number(req.params.folderId);
+
+    await prisma.folder.create({
+      data: {
+        name: req.body.folder,
+        parent_id: folderId,
+        user_id: req.user.id,
+      },
+    });
+
+    res.redirect("/folder/" + folderId);
+  }),
+];
+
 module.exports = {
   rootGet,
   folderGet,
+  folderPost,
 };
