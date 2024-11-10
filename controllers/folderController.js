@@ -21,6 +21,17 @@ const validateFolderName = () =>
     .isLength({ min: 1, max: 200 })
     .withMessage("Folder name must be between 1 and 200 characters.");
 
+const validateFolderIdAndIfRoot = () =>
+  validateFolderId().custom(async (folderId) => {
+    const folder = await prisma.folder.findUnique({
+      where: {
+        id: Number(folderId),
+      },
+    });
+
+    if (folder.parent_id === null && folder.name === "root") throw false;
+  });
+
 const rootGet = asyncHandler(async (req, res) => {
   const rootFolder = await prisma.folder.findFirst({
     where: {
@@ -105,9 +116,8 @@ const folderPost = [
   }),
 ];
 
-// TODO: edit folder get and post and delete, add another param check to avoid editing the root folder of a user
 const folderEditGet = [
-  validateFolderId(),
+  validateFolderIdAndIfRoot(),
   asyncHandler(async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) throw new CustomError(404, "Folder Not Found.");
@@ -125,9 +135,38 @@ const folderEditGet = [
   }),
 ];
 
+const folderEditPost = [
+  validateFolderIdAndIfRoot(),
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw new CustomError(404, "Folder Not Found.");
+
+    next();
+  }),
+  validateFolderName(),
+  asyncHandler(async (req, res) => {
+    const folderId = Number(req.params.folderId);
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) res.redirect(`/folder/edit/${folderId}`);
+
+    const folder = await prisma.folder.update({
+      where: {
+        id: folderId,
+      },
+      data: {
+        name: req.body.folder,
+      },
+    });
+
+    res.redirect(`/folder/${folder.parent_id}`);
+  }),
+];
+
 module.exports = {
   rootGet,
   folderGet,
   folderPost,
   folderEditGet,
+  folderEditPost,
 };
