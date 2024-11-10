@@ -32,6 +32,17 @@ const validateFolderIdAndIfRoot = () =>
     if (folder.parent_id === null && folder.name === "root") throw false;
   });
 
+const validateDeleteFolder = () =>
+  body("folder").custom(async (folderName, { req }) => {
+    const folder = await prisma.folder.findUnique({
+      where: {
+        id: Number(req.params.folderId),
+      },
+    });
+
+    if (folder.name !== folderName) throw false;
+  });
+
 const rootGet = asyncHandler(async (req, res) => {
   const rootFolder = await prisma.folder.findFirst({
     where: {
@@ -163,10 +174,36 @@ const folderEditPost = [
   }),
 ];
 
+const folderDeletePost = [
+  validateFolderIdAndIfRoot(),
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw new CustomError(404, "Folder Not Found.");
+
+    next();
+  }),
+  validateDeleteFolder(),
+  asyncHandler(async (req, res) => {
+    const folderId = Number(req.params.folderId);
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.redirect(`/folder/edit/${folderId}`);
+
+    const deletedFolder = await prisma.folder.delete({
+      where: {
+        id: folderId,
+      },
+    });
+
+    res.redirect(`/folder/${deletedFolder.parent_id}`);
+  }),
+];
+
 module.exports = {
   rootGet,
   folderGet,
   folderPost,
   folderEditGet,
   folderEditPost,
+  folderDeletePost,
 };
