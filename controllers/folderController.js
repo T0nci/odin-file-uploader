@@ -14,6 +14,8 @@ const validateFolderId = () =>
 
     if (!folder || folder.user_id !== req.user.id) throw false;
   });
+// Using this for when uploading files
+module.exports.validateFolderId = validateFolderId;
 
 const validateFolderName = () =>
   body("folder")
@@ -199,7 +201,7 @@ const folderDeletePost = [
   }),
 ];
 
-module.exports = {
+module.exports.controller = {
   rootGet,
   folderGet,
   folderPost,

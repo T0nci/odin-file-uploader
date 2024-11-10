@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const folderController = require("../controllers/folderController");
+const folderController = require("../controllers/folderController").controller;
 
 const folderRouter = Router();
 
