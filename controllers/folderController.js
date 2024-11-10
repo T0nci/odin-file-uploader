@@ -148,7 +148,7 @@ const folderEditPost = [
     const folderId = Number(req.params.folderId);
 
     const errors = validationResult(req);
-    if (!errors.isEmpty()) res.redirect(`/folder/edit/${folderId}`);
+    if (!errors.isEmpty()) return res.redirect(`/folder/edit/${folderId}`);
 
     const folder = await prisma.folder.update({
       where: {
