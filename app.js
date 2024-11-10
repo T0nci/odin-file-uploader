@@ -9,6 +9,7 @@ const CustomError = require("./utils/CustomError");
 const links = require("./utils/links");
 const indexRouter = require("./routes/indexRouter");
 const folderRouter = require("./routes/folderRouter");
+const fileRouter = require("./routes/fileRouter");
 
 const app = express();
 
@@ -45,6 +46,7 @@ app.use(passport.session());
 
 app.use("/", indexRouter);
 app.use("/folder", folderRouter);
+app.use("/file", fileRouter);
 
 // If no routers matched the route then it is a Not Found
 app.use((req, res, next) => {
