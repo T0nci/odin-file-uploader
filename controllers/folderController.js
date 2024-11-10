@@ -80,12 +80,12 @@ const folderGet = [
 
 const folderPost = [
   validateFolderId(),
-  (req, res, next) => {
+  asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) throw new CustomError(404, "Folder Not Found.");
 
     next();
-  },
+  }),
   validateFolderName(),
   asyncHandler(async (req, res) => {
     const errors = validationResult(req);
