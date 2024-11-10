@@ -31,6 +31,7 @@
           <% } else { %>
             <li>
               <a href="/folder/<%= item.id %>"><%= item.name %>/</a>
+              <button onclick="window.location.href = '/folder/edit/<%= item.id %>'">Edit</button>
             </li>
           <% } %>
         <% }) %>

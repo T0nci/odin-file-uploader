@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit <%= folder.name %> - File Uploader</title>
+  </head>
+  <body>
+    <%- include("partials/navbar", { links: links }) %>
+    <main>
+      <header>Edit folder: <%= folder.name %></header>
+      <form action="/folder/edit/<%= folder.id %>" method="POST">
+        <label for="folder">Folder name:</label>
+        <input type="text" name="folder" id="folder" value="<%= folder.name %>" required autocomplete="off" autofocus>
+        <button type="submit">Save</button>
+      </form>
+      <form action="/folder/delete/<%= folder.id %>" method="POST">
+        <label for="folderDelete">Type the folder name for deletion:</label>
+        <input type="text" name="folder" id="folderDelete" required autocomplete="off">
+        <button type="submit">Delete</button>
+      </form>
+    </main>
+  </body>
+</html>

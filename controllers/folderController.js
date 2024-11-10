@@ -105,8 +105,29 @@ const folderPost = [
   }),
 ];
 
+// TODO: edit folder get and post and delete, add another param check to avoid editing the root folder of a user
+const folderEditGet = [
+  validateFolderId(),
+  asyncHandler(async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw new CustomError(404, "Folder Not Found.");
+
+    const folder = await prisma.folder.findUnique({
+      where: {
+        id: Number(req.params.folderId),
+      },
+    });
+
+    res.render("editFolder", {
+      links,
+      folder,
+    });
+  }),
+];
+
 module.exports = {
   rootGet,
   folderGet,
   folderPost,
+  folderEditGet,
 };
