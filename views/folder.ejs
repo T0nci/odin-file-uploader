@@ -27,7 +27,9 @@
         <% } %>
         <% items.forEach((item) => { %>
           <% if (item.url) { %>
-            <li><%= item.name %></li>
+            <li>
+              <a href="/file/<%= item.id %>"><%= item.name %></a>
+            </li>
           <% } else { %>
             <li>
               <a href="/folder/<%= item.id %>"><%= item.name %>/</a>
