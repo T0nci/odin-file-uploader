@@ -37,7 +37,7 @@ const filePost = [
         name: req.file.originalname,
         sizeInBytes: req.file.size,
         folder_id: folderId,
-        url: req.file.destination,
+        url: req.file.path,
       },
     });
 
