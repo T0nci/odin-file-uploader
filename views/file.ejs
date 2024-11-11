@@ -12,7 +12,7 @@
       <p>Size: <%= file.sizeInBytes * 10**-3 %> KB</p>
       <p>Upload time: <%= file.uploadTime %></p>
       <p>Folder: <%= file.folder.name %></p>
-      <button>Download</button>
+      <button onclick="window.location.href = '/file/download/<%= file.id %>'">Download</button>
     </main>
   </body>
 </html>

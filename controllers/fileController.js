@@ -69,7 +69,27 @@ const fileGet = [
   }),
 ];
 
+const fileDownload = [
+  validateFileId(),
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw new CustomError(404, "File Not Found.");
+
+    next();
+  }),
+  asyncHandler(async (req, res) => {
+    const file = await prisma.file.findUnique({
+      where: {
+        id: Number(req.params.fileId),
+      },
+    });
+
+    res.download(file.url, file.name);
+  }),
+];
+
 module.exports = {
   filePost,
   fileGet,
+  fileDownload,
 };
