@@ -1,10 +1,18 @@
-const upload = require("multer")({ dest: "public/data/" });
+const multer = require("multer");
+const handleUpload = require("../utils/cloudinary");
 const prisma = require("../prisma/client");
 const asyncHandler = require("express-async-handler");
 const { validateFolderId } = require("./folderController");
 const { validationResult, param } = require("express-validator");
 const CustomError = require("../utils/CustomError");
 const links = require("../utils/links");
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 1073741824, // 1 GiB(gigabinary byte) in bytes(1 trillion)
+  },
+});
 
 const validateFileId = () =>
   param("fileId").custom(async (fileId, { req }) => {
@@ -32,12 +40,17 @@ const filePost = [
   asyncHandler(async (req, res) => {
     const folderId = Number(req.params.folderId);
 
+    const b64 = Buffer.from(req.file.buffer).toString("base64");
+    const response = await handleUpload(
+      `data:${req.file.mimetype};base64,${b64}`,
+    );
+
     await prisma.file.create({
       data: {
         name: req.file.originalname,
         sizeInBytes: req.file.size,
         folder_id: folderId,
-        url: req.file.path,
+        url: response.secure_url,
       },
     });
 
@@ -84,7 +97,10 @@ const fileDownload = [
       },
     });
 
-    res.download(file.url, file.name);
+    const response = await require("node-fetch")(file.url);
+
+    res.set("Content-disposition", "attachment; filename=" + file.name);
+    res.send(await response.buffer());
   }),
 ];
 
