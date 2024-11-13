@@ -34,6 +34,7 @@
             <li>
               <a href="/folder/<%= item.id %>"><%= item.name %>/</a>
               <button onclick="window.location.href = '/folder/edit/<%= item.id %>'">Edit</button>
+              <button onclick="window.location.href = '/folder/share/<%= item.id %>'">Share</button>
             </li>
           <% } %>
         <% }) %>

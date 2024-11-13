@@ -3,6 +3,7 @@ const prisma = require("../prisma/client");
 const { validationResult, param, body } = require("express-validator");
 const links = require("../utils/links");
 const CustomError = require("../utils/CustomError");
+const { cleanUpSharedFolders } = require("../utils/middleware");
 
 const validateFolderId = () =>
   param("folderId").custom(async (folderId, { req }) => {
@@ -201,6 +202,31 @@ const folderDeletePost = [
   }),
 ];
 
+const folderShareGet = [
+  validateFolderIdAndIfRoot(),
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw new CustomError(404, "Folder Not Found.");
+
+    next();
+  }),
+  asyncHandler(cleanUpSharedFolders),
+  asyncHandler(async (req, res) => {
+    const folder = await prisma.folder.findUnique({
+      where: {
+        id: Number(req.params.folderId),
+      },
+      include: {
+        shared: true,
+      },
+    });
+
+    res.render("shareFolder", { links, folder });
+  }),
+];
+
+const folderSharePost = [];
+
 module.exports.controller = {
   rootGet,
   folderGet,
@@ -208,4 +234,6 @@ module.exports.controller = {
   folderEditGet,
   folderEditPost,
   folderDeletePost,
+  folderShareGet,
+  folderSharePost,
 };

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Share <%= folder.name %> - File Uploader</title>
+  </head>
+  <body>
+    <%- include("partials/navbar", { links: links }) %>
+    <main>
+      <header>Share folder: <%= folder.name %></header>
+      <form action="/folder/share/<%= folder.id %>" method="POST">
+        <label for="duration">Duration of link:</label>
+        <select name="duration" id="duration">
+          <option value="1">1 Day</option>
+          <option value="10">10 Days</option>
+          <option value="30">30 Days</option>
+        </select>
+        <button type="submit">Share</button>
+      </form>
+      <ul>
+        <% folder.shared.forEach((share) => { %>
+          <li>
+            <a href="/share/<%= share.uuid %>"><%= share.uuid %></a>
+            <%= " " %>- Expires at <%= `${share.expires.getDate()}.${share.expires.getMonth() + 1}.${share.expires.getFullYear()}` %>
+          </li>
+        <% }) %>
+      </ul>
+    </main>
+  </body>
+</html>

@@ -28,4 +28,9 @@ module.exports = {
     res.set("Content-disposition", "attachment; filename=" + file.name);
     res.send(await response.buffer());
   },
+  cleanUpSharedFolders: async (req, res, next) => {
+    await prisma.$executeRaw`DELETE FROM "SharedFolder" WHERE expires <= now()`;
+
+    next();
+  },
 };
