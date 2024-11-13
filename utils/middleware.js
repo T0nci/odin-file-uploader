@@ -29,7 +29,7 @@ module.exports = {
     res.send(await response.buffer());
   },
   cleanUpSharedFolders: async (req, res, next) => {
-    await prisma.$executeRaw`DELETE FROM "SharedFolder" WHERE expires <= now()`;
+    await prisma.$executeRaw`DELETE FROM "SharedFolder" WHERE expires <= now() at time zone 'utc'`;
 
     next();
   },
