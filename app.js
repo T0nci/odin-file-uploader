@@ -10,6 +10,7 @@ const links = require("./utils/links");
 const indexRouter = require("./routes/indexRouter");
 const folderRouter = require("./routes/folderRouter");
 const fileRouter = require("./routes/fileRouter");
+const shareRouter = require("./routes/shareRouter");
 
 const app = express();
 
@@ -44,6 +45,7 @@ app.use(
 require("./utils/passport-setup");
 app.use(passport.session());
 
+app.use("/share", shareRouter);
 app.use("/", indexRouter);
 app.use("/folder", folderRouter);
 app.use("/file", fileRouter);
