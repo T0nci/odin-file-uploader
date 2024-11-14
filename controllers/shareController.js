@@ -16,6 +16,23 @@ const validateFolderShared = () =>
     if (!folder) throw false;
   });
 
+const validateFileShared = () =>
+  param("fileId").custom(async (fileId) => {
+    const file = await prisma.file.findUnique({
+      where: {
+        id: Number(fileId),
+      },
+    });
+
+    const folder = await prisma.sharedFolder.findFirst({
+      where: {
+        folder_id: file.folder_id,
+      },
+    });
+
+    if (!folder) throw false;
+  });
+
 const shareRedirect = asyncHandler(async (req, res) => {
   const folderInfo = await prisma.sharedFolder.findUnique({
     where: {
@@ -54,7 +71,30 @@ const folderGet = [
   }),
 ];
 
+const fileGet = [
+  asyncHandler(middleware.cleanUpSharedFolders),
+  validateFileShared(),
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw new CustomError(404, "File Not Found.");
+
+    next();
+  }),
+  asyncHandler(async (req, res) => {
+    const file = await prisma.file.findUnique({
+      where: {
+        id: Number(req.params.fileId),
+      },
+    });
+
+    file.uploadTime = `${file.upload_time.getHours()}:${file.upload_time.getMinutes()} ${file.upload_time.getDate()}.${file.upload_time.getMonth() + 1}.${file.upload_time.getFullYear()}`;
+
+    res.render("fileMini", { links, file, currentUser: req.user });
+  }),
+];
+
 module.exports = {
   shareRedirect,
   folderGet,
+  fileGet,
 };
