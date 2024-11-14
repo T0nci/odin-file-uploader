@@ -6,6 +6,7 @@ const { validateFolderId } = require("./folderController");
 const { validationResult, param } = require("express-validator");
 const CustomError = require("../utils/CustomError");
 const middleware = require("../utils/middleware");
+const links = require("../utils/links");
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -66,7 +67,20 @@ const fileGet = [
 
     next();
   }),
-  asyncHandler(middleware.fileGet),
+  asyncHandler(async (req, res) => {
+    const file = await prisma.file.findUnique({
+      where: {
+        id: Number(req.params.fileId),
+      },
+      include: {
+        folder: true,
+      },
+    });
+
+    file.uploadTime = `${file.upload_time.getHours()}:${file.upload_time.getMinutes()} ${file.upload_time.getDate()}.${file.upload_time.getMonth() + 1}.${file.upload_time.getFullYear()}`;
+
+    res.render("file", { links, file });
+  }),
 ];
 
 const fileDownload = [
