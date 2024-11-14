@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= folder.name %> - File Uploader</title>
+  </head>
+  <body>
+    <% if (locals.currentUser) { %>
+      <%- include("partials/navbar", { links: links }) %>
+    <% } %>
+    <main>
+      <header>Shared folder - <%= folder.name %></header>
+      <ul>
+        <% files.forEach((file) => { %>
+          <li>
+            <a href="/share/file/<%= file.id %>"><%= file.name %></a>
+          </li>
+        <% }) %>
+      </ul>
+    </main>
+  </body>
+</html>
