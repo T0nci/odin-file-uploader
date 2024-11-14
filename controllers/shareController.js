@@ -93,8 +93,21 @@ const fileGet = [
   }),
 ];
 
+const fileDownload = [
+  asyncHandler(middleware.cleanUpSharedFolders),
+  validateFileShared(),
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw new CustomError(404, "File Not Found.");
+
+    next();
+  }),
+  asyncHandler(middleware.fileDownload),
+];
+
 module.exports = {
   shareRedirect,
   folderGet,
   fileGet,
+  fileDownload,
 };

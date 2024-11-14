@@ -7,6 +7,6 @@ const shareRouter = Router();
 shareRouter.get("/:uuid", shareController.shareRedirect);
 shareRouter.get("/folder/:folderId", shareController.folderGet);
 shareRouter.get("/file/:fileId", shareController.fileGet);
-// shareRouter.get("/file/download/:fileId", shareController.fileDownload);
+shareRouter.get("/file/download/:fileId", shareController.fileDownload);
 
 module.exports = shareRouter;
