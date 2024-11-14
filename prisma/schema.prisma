@@ -53,6 +53,6 @@ model SharedFolder {
   id        Int      @id @default(autoincrement())
   folder    Folder   @relation(fields: [folder_id], references: [id])
   folder_id Int
-  uuid      String   @default(uuid())
+  uuid      String   @unique @default(uuid())
   expires   DateTime /// ALWAYS STORED IN UTC AND TRANSFORMED WHEN NEED TO SHOW
 }
