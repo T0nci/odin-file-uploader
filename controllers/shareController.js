@@ -67,7 +67,7 @@ const folderGet = [
       },
     });
 
-    res.render("folderMini", { links, folder, files, currentUser: req.user });
+    res.render("folderMini", { links, folder, files });
   }),
 ];
 
@@ -89,7 +89,7 @@ const fileGet = [
 
     file.uploadTime = `${file.upload_time.getHours()}:${file.upload_time.getMinutes()} ${file.upload_time.getDate()}.${file.upload_time.getMonth() + 1}.${file.upload_time.getFullYear()}`;
 
-    res.render("fileMini", { links, file, currentUser: req.user });
+    res.render("fileMini", { links, file });
   }),
 ];
 
