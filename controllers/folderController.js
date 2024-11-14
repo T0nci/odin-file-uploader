@@ -225,7 +225,35 @@ const folderShareGet = [
   }),
 ];
 
-const folderSharePost = [];
+const durationArray = [1, 10, 30];
+const folderSharePost = [
+  validateFolderIdAndIfRoot(),
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw new CustomError(404, "Folder Not Found.");
+
+    next();
+  }),
+  asyncHandler(async (req, res) => {
+    let duration = Number(req.body.duration);
+    const folderId = Number(req.params.folderId);
+
+    if (!durationArray.includes(duration)) duration = 1;
+
+    // Follows the UTC
+    const expires = new Date();
+    expires.setDate(new Date().getDate() + duration);
+
+    await prisma.sharedFolder.create({
+      data: {
+        folder_id: folderId,
+        expires,
+      },
+    });
+
+    res.redirect(`/folder/share/${folderId}`);
+  }),
+];
 
 module.exports.controller = {
   rootGet,

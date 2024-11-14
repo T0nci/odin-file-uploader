@@ -22,7 +22,7 @@
         <% folder.shared.forEach((share) => { %>
           <li>
             <a href="/share/<%= share.uuid %>"><%= share.uuid %></a>
-            <%= " " %>- Expires at <%= share.expires.toLocaleDateString() %>
+            <%= " " %>- Expires at <%= share.expires.toLocaleString() %>
           </li>
         <% }) %>
       </ul>
