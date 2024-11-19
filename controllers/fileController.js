@@ -1,5 +1,5 @@
 const multer = require("multer");
-const { handleUpload } = require("../utils/cloudinary");
+const { handleUpload, deleteUpload } = require("../utils/cloudinary");
 const prisma = require("../prisma/client");
 const asyncHandler = require("express-async-handler");
 const { validateFolderId } = require("./folderController");
@@ -95,8 +95,27 @@ const fileDownload = [
   asyncHandler(middleware.fileDownload),
 ];
 
+const fileDelete = [
+  validateFileId(),
+  asyncHandler(async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw new CustomError(404, "File Not Found.");
+
+    const deletedFile = await prisma.file.delete({
+      where: {
+        id: Number(req.params.fileId),
+      },
+    });
+
+    await deleteUpload(deletedFile.public_id);
+
+    res.redirect(`/folder/${deletedFile.folder_id}`);
+  }),
+];
+
 module.exports = {
   filePost,
   fileGet,
   fileDownload,
+  fileDelete,
 };

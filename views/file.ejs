@@ -13,6 +13,7 @@
       <p>Upload time: <%= file.uploadTime %></p>
       <p>Folder: <%= file.folder.name %></p>
       <button onclick="window.location.href = '/file/download/<%= file.id %>'">Download</button>
+      <button onclick="window.location.href = '/file/delete/<%= file.id %>'">Delete</button>
     </main>
   </body>
 </html>
