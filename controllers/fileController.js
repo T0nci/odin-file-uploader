@@ -52,6 +52,7 @@ const filePost = [
         sizeInBytes: req.file.size,
         folder_id: folderId,
         url: response.secure_url,
+        public_id: response.public_id,
       },
     });
 

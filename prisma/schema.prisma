@@ -45,6 +45,7 @@ model File {
   sizeInBytes Int
   upload_time DateTime @default(now())
   url         String   @db.VarChar(255)
+  public_id   String   @db.VarChar(255)
   folder      Folder?  @relation(fields: [folder_id], references: [id])
   folder_id   Int?
 }
