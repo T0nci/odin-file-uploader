@@ -14,11 +14,10 @@
         <input type="text" name="folder" id="folder" value="<%= folder.name %>" required autocomplete="off" autofocus>
         <button type="submit">Save</button>
       </form>
-      <form action="/folder/delete/<%= folder.id %>" method="POST">
-        <label for="folderDelete">Type the folder name for deletion:</label>
-        <input type="text" name="folder" id="folderDelete" required autocomplete="off">
-        <button type="submit">Delete</button>
-      </form>
+      <div>
+        <p>The folder needs to be empty before deleting it!</p>
+        <button onclick="window.location.href = '/folder/delete/<%= folder.id %>'">Delete</button>
+      </div>
     </main>
   </body>
 </html>

@@ -35,17 +35,6 @@ const validateFolderIdAndIfRoot = () =>
     if (folder.parent_id === null && folder.name === "root") throw false;
   });
 
-const validateDeleteFolder = () =>
-  body("folder").custom(async (folderName, { req }) => {
-    const folder = await prisma.folder.findUnique({
-      where: {
-        id: Number(req.params.folderId),
-      },
-    });
-
-    if (folder.name !== folderName) throw false;
-  });
-
 const rootGet = asyncHandler(async (req, res) => {
   const rootFolder = await prisma.folder.findFirst({
     where: {
@@ -185,18 +174,21 @@ const folderDeletePost = [
 
     next();
   }),
-  validateDeleteFolder(),
   asyncHandler(async (req, res) => {
     const folderId = Number(req.params.folderId);
-
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.redirect(`/folder/edit/${folderId}`);
 
     const deletedFolder = await prisma.folder.findUnique({
       where: {
         id: folderId,
       },
+      include: {
+        children: true,
+        files: true,
+      },
     });
+
+    if (deletedFolder.children.length > 0 || deletedFolder.files.length > 0)
+      return res.redirect(`/folder/edit/${folderId}`);
 
     await prisma.$transaction([
       prisma.sharedFolder.deleteMany({
@@ -204,14 +196,9 @@ const folderDeletePost = [
           folder_id: folderId,
         },
       }),
-      prisma.file.deleteMany({
+      prisma.folder.delete({
         where: {
-          folder_id: folderId,
-        },
-      }),
-      prisma.folder.deleteMany({
-        where: {
-          OR: [{ id: folderId }, { parent_id: folderId }],
+          id: folderId,
         },
       }),
     ]);
