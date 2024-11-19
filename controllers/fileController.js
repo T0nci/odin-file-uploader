@@ -1,5 +1,5 @@
 const multer = require("multer");
-const handleUpload = require("../utils/cloudinary");
+const { handleUpload } = require("../utils/cloudinary");
 const prisma = require("../prisma/client");
 const asyncHandler = require("express-async-handler");
 const { validateFolderId } = require("./folderController");
