@@ -192,11 +192,29 @@ const folderDeletePost = [
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.redirect(`/folder/edit/${folderId}`);
 
-    const deletedFolder = await prisma.folder.delete({
+    const deletedFolder = await prisma.folder.findUnique({
       where: {
         id: folderId,
       },
     });
+
+    await prisma.$transaction([
+      prisma.sharedFolder.deleteMany({
+        where: {
+          folder_id: folderId,
+        },
+      }),
+      prisma.file.deleteMany({
+        where: {
+          folder_id: folderId,
+        },
+      }),
+      prisma.folder.deleteMany({
+        where: {
+          OR: [{ id: folderId }, { parent_id: folderId }],
+        },
+      }),
+    ]);
 
     res.redirect(`/folder/${deletedFolder.parent_id}`);
   }),
